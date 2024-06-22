@@ -1,0 +1,27 @@
+name: Build & Publish
+run-name: Build Podman image and publish on the Container registry
+on: # yamllint disable-line rule:truthy
+  schedule:
+    - cron: '@daily'
+  push:
+    branches:
+      - 'master'
+
+outputs:
+  game-version:
+    description: "Factorio Version"
+    value: ${{ steps.get-version.outputs.game-version }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - id: get-version
+        run: echo "game-version=$(curl https://factorio.com/api/latest-releases | jq .stable.headless -r)" >> $GITEA_OUTPUT
+        shell: bash
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          ssh-key: ${{ secrets.SSH_KEY }}
+          ssh-known-hosts: ${{ secrets.SSH_HOST_KEY }}
+      - name: 
