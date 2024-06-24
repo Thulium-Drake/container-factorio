@@ -1,3 +1,4 @@
+---
 name: Build & Publish
 run-name: Build Podman image and publish on the Container registry
 on: # yamllint disable-line rule:truthy
@@ -7,21 +8,45 @@ on: # yamllint disable-line rule:truthy
     branches:
       - 'master'
 
-outputs:
-  game-version:
-    description: "Factorio Version"
-    value: ${{ steps.get-version.outputs.game-version }}
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - id: get-version
-        run: echo "game-version=$(curl https://factorio.com/api/latest-releases | jq .stable.headless -r)" >> $GITEA_OUTPUT
+      - name: Check Factorio version
+        id: get-version
+        run: echo "game-version=$(curl https://factorio.com/api/latest-releases | jq .stable.headless -r)" >> $GITHUB_OUTPUT
+        shell: bash
+      - name: Set Container Registry URL
+        id: set-registry-url
+        run: |
+          echo "registry-url=$(echo $GITHUB_SERVER_URL | sed 's#https\?://##')" >> $GITHUB_OUTPUT
+          echo "repository-id=$(echo ${GITHUB_REPOSITORY,,})" >> $GITHUB_OUTPUT
         shell: bash
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+      - name: Prepare BuildX
+        uses: docker/setup-buildx-action@v1
         with:
-          ssh-key: ${{ secrets.SSH_KEY }}
-          ssh-known-hosts: ${{ secrets.SSH_HOST_KEY }}
-      - name: 
+          config-inline: |
+              [registry."${{ steps.set-registry-url.outputs.registry-url }}"]
+              ca=["/etc/ssl/certs/ca-certificates.crt"]
+      - name: Login to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ steps.set-registry-url.outputs.registry-url }}
+          username: ${{ env.GITHUB_ACTOR }}
+          password: ${{ secrets.CONTAINER_REGISTRY_TOKEN }}
+      - name: Build and publish Container
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Containerfile
+          push: true
+          build-args: |
+            VERSION=${{ env.VERSION }}
+          tags: |
+            ${{ env.CONTAINER_TAG }}:latest
+            ${{ env.CONTAINER_TAG }}:${{ env.VERSION }}
+        env:
+          VERSION: ${{ steps.get-version.outputs.game-version }}
+          CONTAINER_TAG: ${{ steps.set-registry-url.outputs.registry-url }}/${{ steps.set-registry-url.outputs.repository-id }}

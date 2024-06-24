@@ -15,4 +15,4 @@ sanity_check
 
 GAME_VERSION=$(curl https://factorio.com/api/latest-releases | jq .stable.headless -r)
 
-podman build -t --build-arg VERSION=$GAME_VERSION .
+podman build -t factorio:$GAME_VERSION --build-arg VERSION=$GAME_VERSION .
