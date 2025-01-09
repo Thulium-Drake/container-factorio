@@ -11,7 +11,7 @@ RUN apt-get update -yq \
 # Install game server
 RUN curl -L https://factorio.com/get-download/$GAME_VERSION/headless/linux64 | tar xJf - --strip-components=1 -C /game \
   && rm -rf /game/saves \
-  && ln -nfs /data/saves /game/saves
+  && ln -s /data/saves /game/saves
 
 ADD --chmod=0755 start.sh /
 
