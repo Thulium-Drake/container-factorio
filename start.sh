@@ -43,4 +43,4 @@ then
 fi
 
 echo "Starting server"
-/game/bin/x64/factorio --start-server /data/saves/server.zip --server-settings /data/server-settings.json --mod-directory /data/mods  --server-adminlist /data/server-adminlist.json --server-banlist /data/server-banlist.json
+/game/bin/x64/factorio --start-server-load-latest --server-settings /data/server-settings.json --mod-directory /data/mods  --server-adminlist /data/server-adminlist.json --server-banlist /data/server-banlist.json
