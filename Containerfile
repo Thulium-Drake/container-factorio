@@ -10,6 +10,7 @@ RUN apt-get update -yq \
 
 # Install game server
 RUN curl -L https://factorio.com/get-download/$GAME_VERSION/headless/linux64 | tar xJf - --strip-components=1 -C /game \
+  && mkdir /data/saves \
   && rm -rf /game/saves \
   && ln -s /data/saves /game/saves
 
