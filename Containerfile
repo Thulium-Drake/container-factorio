@@ -7,7 +7,7 @@ RUN apt-get update -yq \
   && apt-get install -y \
      curl xz-utils tar \
   && apt-get clean \
-  && mkdir /game \
+  && mkdir -p /game/saves \
   && curl -L https://factorio.com/get-download/$GAME_VERSION/headless/linux64 \
   | tar xJf - --strip-components=1 -C /game \
   && ln -nfs /game/saves /data/saves
