@@ -22,7 +22,7 @@ jobs:
         run: |
           echo "registry-url=$(echo $GITHUB_SERVER_URL | sed 's#https\?://##')" >> $GITHUB_OUTPUT
           echo "repository-owner=$(echo ${GITHUB_REPOSITORY_OWNER,,})" >> $GITHUB_OUTPUT
-          echo "repository-id=$(echo ${GITHUB_REPOSITORY,,})" >> $GITHUB_OUTPUT
+          echo "image-name=$(echo ${GITHUB_REPOSITORY,,} | cut -d\/ -f2)" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Check out code
