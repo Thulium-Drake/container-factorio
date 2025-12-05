@@ -42,5 +42,16 @@ then
     /game/bin/x64/factorio --map-gen-settings /data/map-gen-settings.json --map-settings /data/map-settings.json --create /data/saves/server.zip
 fi
 
+handle_sigint() {
+  echo "Exiting server, sending SIGINT to factorio process"
+  kill -SIGINT "$child"
+  wait "$child"
+}
+
+trap 'handle_sigint' SIGINT
+
 echo "Starting server"
-/game/bin/x64/factorio --start-server-load-latest --server-settings /data/server-settings.json --mod-directory /data/mods  --server-adminlist /data/server-adminlist.json --server-banlist /data/server-banlist.json
+/game/bin/x64/factorio --start-server-load-latest --server-settings /data/server-settings.json --mod-directory /data/mods  --server-adminlist /data/server-adminlist.json --server-banlist /data/server-banlist.json &
+child=$!
+
+wait "$child"
