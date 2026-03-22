@@ -16,5 +16,5 @@ RUN ln -s /data/saves /game/saves
 
 ADD --chmod=0755 start.sh /
 
-ENTRYPOINT /start.sh
+ENTRYPOINT ["/start.sh"]
 STOPSIGNAL SIGINT
