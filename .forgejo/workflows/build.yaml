@@ -28,7 +28,7 @@ jobs:
         run: |
           echo "tags=latest ${{ needs.get-latest-game-version.outputs.game-version }}" >> "$FORGEJO_OUTPUT"
     outputs:
-      publish-tags: ${{ steps.define.outputs }}
+      publish-tags: ${{ steps.define.outputs.tags }}
 
   include-common-workflow:
     needs:
