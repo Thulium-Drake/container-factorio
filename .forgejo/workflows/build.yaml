@@ -22,6 +22,7 @@ jobs:
 
   define-tags:
     runs-on: rhel-latest
+    needs: get-latest-game-version
     steps:
       - id: define
         run: |
