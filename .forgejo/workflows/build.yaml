@@ -1,0 +1,39 @@
+---
+name: Build and publish Podman container
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '@daily'
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  get-latest-game-version:
+    runs-on: rhel-latest
+    steps:
+      - name: Check Factorio version
+        id: get-version
+        run: |
+          echo 'game-version=$(curl https://factorio.com/api/latest-releases | jq .stable.headless -r)' >> "$FORGEJO_OUTPUT"
+    outputs:
+      game-version: ${{ steps.get-version.outputs }}
+
+  define-tags:
+    runs-on: rhel-latest
+    steps:
+      - id: define
+        run: |
+          echo "tags='latest ${{ needs.get-latest-game-version.outputs.game-version }}' >> "$FORGEJO_OUTPUT"
+    outputs:
+      publish-tags: ${{ steps.define.outputs }}
+
+  include-common-workflow:
+    needs: define-tags
+    uses: Element-Networks/ci_workflows/.forgejo/workflows/podman_container.yaml@main
+    secrets: inherit
+    with:
+      publish-tags: ${{ needs.define-tags.outputs.publish-tags }}
+      extra-build-args: |
+        VERSION=${{ needs.get-latest-game-version.outputs.game-version }}
