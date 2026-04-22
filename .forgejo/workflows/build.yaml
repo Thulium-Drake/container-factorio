@@ -16,7 +16,7 @@ jobs:
       - name: Check Factorio version
         id: get-version
         run: |
-          echo 'game-version=$(curl https://factorio.com/api/latest-releases | jq .stable.headless -r)' >> "$FORGEJO_OUTPUT"
+          echo "game-version=$(curl https://factorio.com/api/latest-releases | jq .stable.headless -r)" >> "$FORGEJO_OUTPUT"
     outputs:
       game-version: ${{ steps.get-version.outputs.game-version }}
 
