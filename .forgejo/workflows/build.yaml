@@ -30,7 +30,9 @@ jobs:
       publish-tags: ${{ steps.define.outputs }}
 
   include-common-workflow:
-    needs: define-tags
+    needs:
+      - define-tags
+      - get-latest-game-version
     uses: Element-Networks/ci_workflows/.forgejo/workflows/podman_container.yaml@main
     secrets: inherit
     with:
