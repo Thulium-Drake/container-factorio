@@ -26,7 +26,7 @@ jobs:
     steps:
       - id: define
         run: |
-          echo "tags=latest ${{ needs.get-latest-game-version.outputs.game-version }}" >> "$FORGEJO_OUTPUT"
+          echo "tags=latest-experimental ${{ needs.get-latest-game-version.outputs.game-version }}" >> "$FORGEJO_OUTPUT"
     outputs:
       publish-tags: ${{ steps.define.outputs.tags }}
 
@@ -39,4 +39,4 @@ jobs:
     with:
       publish-tags: ${{ needs.define-tags.outputs.publish-tags }}
       extra-build-args: |
-        VERSION=${{ needs.get-latest-game-version.outputs.game-version }}
+        GAME_VERSION=${{ needs.get-latest-game-version.outputs.game-version }}
