@@ -4,6 +4,9 @@
 # Ensure we have dirs for saves and mods
 mkdir -p /data/{saves,mods}
 
+# Clean up any leftover tmp saves
+rm /data/saves/*.tmp/zip
+
 # Test if we have settings files, if not, copy them
 if ! test -f /data/map-gen-settings.json
 then
