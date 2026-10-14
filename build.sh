@@ -13,6 +13,5 @@ function sanity_check() {
 
 sanity_check
 
-GAME_VERSION=$(curl https://factorio.com/api/latest-releases | jq .stable.headless -r)
-
-podman build -t factorio:$GAME_VERSION --build-arg VERSION=$GAME_VERSION .
+# Build the container, the Containerfile will retrieve the latest version from the stable update channel
+podman build -t factorio:latest --build-arg GAME_VERSION=stable .

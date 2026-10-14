@@ -16,5 +16,8 @@ RUN ln -s /data/saves /game/saves
 
 ADD --chmod=0755 start.sh /
 
+EXPOSE 34197/udp
+VOLUME /data
+
 ENTRYPOINT ["/start.sh"]
 STOPSIGNAL SIGINT
